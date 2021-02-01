@@ -1,0 +1,169 @@
+
+/* 내가 !!!!!  */
+/* 
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&display=swap');
+.NanumGothic{
+  font-family: 'Nanum Gothic', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+}
+.NanumGothicB{
+  font-family: 'Nanum Gothic', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+}
+.NanumGothicUB{
+  font-family: 'Nanum Gothic', sans-serif;
+  font-style: normal;
+  font-weight: 800;
+}
+ */
+ 
+
+/* MainLogin 배경색, 버튼색 */
+.bg-gradient-loginpage {
+  background-color: #7F7FD5;
+  background-image: linear-gradient(to right, #7F7FD5 10%, #86A8E7 100%);
+  background-size: cover;
+} 
+
+.btn-loginpage{
+  color: #fff;
+  background-color: #7F7FD5;
+  border-color: #7F7FD5;
+}
+
+.btn-login {
+  color: #fff;
+  background-color: #7F7FD5;
+  border-color: #7F7FD5;
+}
+
+.btn-login:hover {
+  color: #fff;
+  background-color: #738be1;
+  border-color: #738be1;
+}
+ 
+/* Table */
+.styled-table {
+  
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 1em;
+  min-width: 100%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+  background-color: #86A8E7;
+  color: #ffffff;
+
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #7F7FD5;
+}
+
+.table-button {
+  width:100px;
+  background-color: #7aa458;
+  border: none;
+  color:#fff;
+  padding: 10px 0;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 15px;
+  margin: 4px;
+  cursor: pointer;
+  border-radius:10px;
+
+  
+}
+
+/* Organization_chart */
+.organ{
+	color: green;
+	width: 60px;
+	border: 1px solid #fff;
+	text-align: center;
+}
+
+.organ img {
+	clear: both;
+	display: block;
+	margin: auto;
+}
+
+.google-visualization-orgchart-lineleft {
+	border-left: 2px solid #333!important;
+}
+.google-visualization-orgchart-linebottom {
+	border-bottom: 2px solid #333!important;
+}
+.google-visualization-orgchart-lineright {
+	border-right: 2px solid #333!important;
+}
+
+/* EditMypage */
+
+.profile-button {
+    background: #7F7FD5;
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #738be1;
+}
+
+.profile-button:focus {
+    background: #738be1;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #738be1;
+    box-shadow: none
+}
+
+.scroll {
+    max-height: 70vh; 
+    overflow-y: auto;
+}
+
+/* button */
+.btn.outline {
+  background: none;
+  padding: 12px 22px;
+}
+.btn-primary.outline {
+  border: 2px solid #0099cc;
+  color: #0099cc;
+}
+.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
+  color: #33a6cc;
+  border-color: #33a6cc;
+}
+.btn-primary.outline:active, .btn-primary.outline.active {
+  border-color: #007299;
+  color: #007299;
+  box-shadow: none;
+}
+
+
+/* 내가 !!!!!  */

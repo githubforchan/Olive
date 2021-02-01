@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.hr_management.dao.Hr_managementDao">
+
+
+	<select id="getHeadCount" resultType="String">
+		SELECT COUNT(*) FROM emp
+		WHERE statuscode != 30
+	</select>
+
+	<select id="getHiredCount" resultType="String">
+		SELECT count(*) FROM emp
+		WHERE year(hiredate) = year(now())
+	</select>
+
+	<select id="getRetiredCount" resultType="String">
+		SELECT count(*) FROM emp
+		WHERE year(leavedate) = year(now())
+	</select>
+
+	<select id="getEmpInfo" parameterType="String"
+		resultType="HashMap">
+		SELECT *
+		FROM empinfo
+		WHERE empno = #{empno}
+	</select>
+
+
+	<select id="checkEmpno" parameterType="String"
+		resultType="String">
+		SELECT empno
+		FROM emp
+		WHERE empno LIKE CONCAT(#{empno},'%')
+		ORDER BY empno desc
+		LIMIT 0, 1;
+	</select>
+
+	<select id="getSalaryDetail" parameterType="Hashmap"
+		resultType="com.olive.dto.SalaryInfo">
+		SELECT *
+		FROM salaryInfo
+		WHERE sal_date=#{sal_date} and
+		empno=#{empno}
+	</select>
+
+	<select id="searchEmp" parameterType="String"
+		resultType="HashMap">
+		SELECT ename, deptname, classname, empno
+		FROM empinfo
+		WHERE
+		ename LIKE CONCAT(#{ename},'%') AND STATUSNAME != 'inactive'
+	</select>
+
+	<select id="getAttbyEmpno" parameterType="String"
+		resultType="HashMap">
+		SELECT attname, count(*) as num
+		FROM
+		(SELECT *
+		FROM emp_att
+		WHERE empno = #{empno}) a
+		GROUP BY attname
+	</select>
+
+	<insert id="insertSalaryTbl" parameterType="java.util.List">
+		INSERT INTO Sal_record(
+		SAL_DATE,
+		EMPNO,
+		basic_pay,
+		overtime_pay,
+		position_pay,
+		bonus,
+		maintenance_of_vehicle,
+		educational_supports,
+		mess_allowance,
+		income_tax,
+		local_income_tax,
+		health_insurance,
+		care_insurance,
+		employment_insurance,
+		national_pension
+		)VALUES
+		<foreach collection="list" item="item" separator=",">
+			(
+			#{item.sal_date},
+			#{item.empno},
+			#{item.basic_pay},
+			#{item.overtime_pay},
+			#{item.position_pay},
+			#{item.bonus},
+			#{item.maintenance_of_vehicle},
+			#{item.educational_supports},
+			#{item.mess_allowance},
+			#{item.income_tax},
+			#{item.local_income_tax},
+			#{item.employment_insurance},
+			#{item.health_insurance},
+			#{item.care_insurance},
+			#{item.national_pension}
+			)
+		</foreach>
+	</insert>
+
+	<insert id="insertNewEmp" parameterType="com.olive.dto.Emp">
+		INSERT INTO emp (empNo,
+		ename, pwd, hireDate, deptCode, positionCode, classCode, statusCode,
+		enabled, birth,annual,logincount)
+		VALUES (#{empNo}, #{ename}, #{pwd}, #{hireDate},
+		#{deptCode}, #{positionCode}, #{classCode}, #{statusCode}, #{enabled},
+		#{birth},round(20*(1-(month(now())-1)/12)),0)
+	</insert>
+
+	<select id="selectAllList" resultType="com.olive.dto.Emp">
+		SELECT *
+		FROM emp
+	</select>
+
+	<select id="checkEmpNo" parameterType="java.lang.String"
+		resultType="com.olive.dto.Emp">
+		SELECT *
+		FROM emp
+		WHERE empno = #{empNo}
+	</select>
+
+	<select id="getHeadQuarters" resultType="com.olive.dto.Head">
+		SELECT *
+		FROM head
+	</select>
+
+	<select id="getDepartments" parameterType="String"
+		resultType="com.olive.dto.Dept">
+		SELECT deptCode, deptName
+		FROM dept
+		WHERE headCode =
+		#{headCode}
+	</select>
+
+	<select id="getPositions" resultType="com.olive.dto.Position">
+		SELECT positionCode,
+		positionName
+		FROM position
+	</select>
+
+	<select id="getClasses" resultType="com.olive.dto.Class">
+		SELECT classCode, className
+		FROM class
+	</select>
+
+	<select id="getSalChartDataForDept" resultType="HashMap">
+		SELECT
+		deptname as
+		'dept',
+		round(sum((basic_pay+
+		overtime_pay+
+		position_pay+
+		bonus+
+		maintenance_of_vehicle+
+		educational_supports
+		))/count(*)) as 'total'
+		FROM salaryinfo
+		group by deptname
+	</select>
+
+	<select id="getSalChartDataForClass" resultType="HashMap">
+		SELECT
+		classname
+		as 'class',
+		round(sum((basic_pay+
+		overtime_pay+
+		position_pay+
+		bonus+
+		maintenance_of_vehicle+
+		educational_supports
+		))/count(*)) as 'total'
+		FROM salaryinfo
+		group by classname
+	</select>
+
+	<select id="getAnnualList" resultType="HashMap">
+		SELECT
+		*
+		FROM
+		annualList
+		WHERE empno = #{empno}
+	</select>
+
+	<update id="updateAnnual" parameterType="HashMap">
+		update emp
+		set annual =
+		#{annual}
+		where empno = #{empno}
+	</update>
+
+	<update id="updateAttRecord" parameterType="HashMap">
+		update att_record
+		set
+		endtime = DATE_ADD(#{starttime}, INTERVAL +10 HOUR),
+		attcode=80
+		where
+		empno = #{empno} and starttime = #{starttime}
+	</update>
+
+	<select id="getAttGroupByDept" resultType="HashMap">
+		SELECT * FROM
+		attRecordbyDept
+	</select>
+
+	<!-- 희승 : 연도별(최근 5년) 입사인원 select -->
+	<select id="getHiredDate" resultType="HashMap">
+		SELECT
+		DATE_FORMAT(hiredate, '%Y') AS 'year',
+		COUNT(*) AS 'hireCount'
+		FROM emp
+		GROUP BY DATE_FORMAT(hiredate, '%y')
+		ORDER BY hiredate DESC
+		LIMIT 0,5
+	</select>
+
+	<!-- 희승 : 연도별(최근 5년) 퇴사인원 select -->
+	<select id="getLeavedDate" resultType="HashMap">
+		SELECT
+		DATE_FORMAT(leavedate , '%Y') AS 'year',
+		COUNT(*) AS 'leaveCount'
+		FROM
+		emp
+		WHERE leavedate IS NOT NULL
+		GROUP BY DATE_FORMAT(leavedate , '%y')
+		ORDER BY leavedate DESC
+		LIMIT 0,5
+	</select>
+
+	<!-- 희승 : 현재 총 사원 수 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT COUNT(*)
+		FROM emp
+		WHERE statuscode != 30
+	</select>
+
+	<!-- 희승 : 부서별 근속인원 검색 -->
+	<select id="getGroupedDeptData" resultType="HashMap">
+		SELECT deptname AS
+		'deptName',
+		COUNT(*) AS 'empCount'
+		FROM empinfo
+		WHERE statusname !=
+		'비활성화'
+		GROUP BY DEPTNAME;
+	</select>
+
+	<select id="getClassList" resultType="com.olive.dto.Class">
+		SELECT classcode, classname
+		FROM class
+		ORDER BY classcode asc
+	</select>
+
+	<select id="getAttList" resultType="String">
+		SELECT attname
+		FROM attendance
+		WHERE attcode in (20,30,40,50,60)
+		ORDER BY attcode
+	</select>
+
+	<update id="resetAccount" parameterType="HashMap">
+		UPDATE EMP SET
+		STATUSCODE = 10,
+		ENABLED = 1,
+		LOGINCOUNT = 0,
+		EMAil = null,
+		PWD = #{pwd}
+		WHERE EMPNO = #{empno}
+	</update>
+
+	<update id="retireAccount" parameterType="HashMap">
+		UPDATE EMP SET
+		STATUSCODE = 30,
+		LEAVEDATE = now(),
+		ENABLED = 0
+		WHERE EMPNO = #{empno}
+	</update>
+
+	<update id="updateAccount" parameterType="com.olive.dto.Emp">
+		UPDATE EMP SET
+		ename = #{ename},
+		birth = #{birth},
+		hireDate = #{hireDate},
+		leaveDate = #{leaveDate},
+		deptCode = #{deptCode},
+		positioncode = #{positionCode},
+		classcode = #{classCode}
+		WHERE EMPNO = #{empNo}
+	</update>
+</mapper>

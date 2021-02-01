@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.approval.dao.ApprovalDao">
+
+	<select id="getMaxDocno" resultType="string">
+	select max(docno) from document where typeCode=#{typeCode}
+	</select>
+
+	<select id="selectEmp" resultType="com.olive.dto.Emp">
+	    select e.* ,count as usedAnnual from empinfo e left join empAnnual a on e.empno = a.empno 
+		where e.empno = #{empno}
+	</select>
+	<!--내가 기안한 문서 가지고 오는거-->
+	<select id="getDocument" resultType="com.olive.dto.Document">
+		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , ds.statusname,dt.typename,e.ename,d.empno,d.filename
+		from document d join doc_status ds join doc_type dt join emp e 
+		on d.statuscode = ds.statuscode and d.typecode = dt.typecode and d.empno=e.empno
+		where d.empno = #{empno}
+	</select>
+	
+		<!--문서 번호로 결재자 가지고 오는거-->
+	<select id="viewApprovers" resultType="com.olive.dto.Approver">
+		select a.app_Order,a.app_Check, a.app_Date,a.comment, d.total_Approval, d.curr_Approval, d.title, d.writedate ,e.ename,dep.deptname,p.positionname,e.empno
+		from document d join approver a join emp e join dept dep join position p 
+		on d.docno=a.docno and a.empno = e.empno and e.deptCode = dep.deptCode and e.positioncode = p.positioncode
+		where d.docno = #{docNo} order by app_Order asc
+	</select> 
+			<!--문서 번호로 문서 가지고 오는거-->
+	<select id="viewDocument" resultType="com.olive.dto.Document">
+		select d.docno,d.empno, d.writedate, d.title, d.total_Approval, d.content, d.curr_Approval, d.statusCode, d.typeCode, d.statusname,d.typename,d.ename,da.startdate as start ,da.enddate as end ,d.filename 
+		from viewdocument d left join doc_add da
+		on da.document_docno=d.docno
+		where d.docno = #{docno}
+	</select> 
+	 
+	<!--내가 기안한 문서 페이징 처리 가지고 오는거-->
+	<select id="getDocumentRec" resultType="com.olive.dto.Document">
+		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , ds.statusname,dt.typename,e.ename 
+		from document d join doc_status ds join doc_type dt join emp e 
+		on d.statuscode = ds.statuscode and d.typecode = dt.typecode and d.empno=e.empno
+		where d.empno = #{param1}
+		order by writeDate desc
+		
+		<if test="param2 != null and param3 != null">
+			limit #{param3} offset #{param2}
+		</if>
+		
+	</select> 
+	<!-- 메인에 결재 관련 정보 뿌려 주기-->
+	<select id="getApprover" resultType="com.olive.dto.Approver">
+		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.typeCode,d.total_Approval,d.curr_Approval,dt.typename
+		from approver a join document d join emp e join doc_type dt
+		on a.docno=d.docno and e.empno=d.empno and d.typecode = dt.typecode
+		where a.empno = #{empno}
+		
+		order by d.writedate desc
+	</select>
+	<!-- 메인에 결재 관련 정보 페이징 처리  뿌려 주기-->
+	<select id="getApproverRec" resultType="com.olive.dto.Approver">
+		select a.docno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.total_Approval,d.curr_Approval
+		from approver a join document d join emp e
+		on a.docno=d.docno and e.empno=d.empno
+		where a.empno = #{param1}
+		order by d.writeDate desc 
+		<if test="param2 != null and param3 != null">
+		limit  #{param3} offset #{param2}
+		</if>
+	</select>
+	<!-- 참조자 하나 만들어 놓기 -->
+	<select id="getRefference" resultType="com.olive.dto.Reference">
+		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.typeCode,d.total_Approval,d.curr_Approval,dt.typename
+		from approver a join document d join emp e join doc_type dt join reference r
+		on a.docno=d.docno and e.empno=d.empno and d.typecode = dt.typecode and d.docno=r.docno
+        where r.empno = #{empno}
+	</select> 
+
+	<select id="selectDocType" resultType="com.olive.dto.Doc_Type">
+	select typecode, typename from doc_type
+	</select>
+
+	<insert id="writeDocument" parameterType="com.olive.dto.Document">
+		
+		insert
+		into 
+		document (docno,empno,writedate,title,content,total_approval,curr_approval,filename,statuscode,typecode)
+		values 
+		(#{docno},#{empno},#{writedate},#{title},#{content},#{total_Approval},0,#{filename},10,#{typeCode}); 
+		<if test="typeCode!=10">
+		insert into doc_add (DOCUMENT_DOCNO,STARTDATE,ENDDATE,timediff) 
+		values
+		<choose>
+			<when test="typeCode != 20">
+			(#{docno}, #{start},#{end},(TIMESTAMPDIFF(DAY,#{start},#{end})+1))
+			</when>
+			<otherwise>
+			(#{docno},#{start},#{start},0.5) 
+			</otherwise>
+		</choose>
+		</if>
+		
+	</insert>
+
+	<insert id="insertApprover" parameterType="com.olive.dto.Document">
+		
+		insert into approver (docno,app_order,empno) values
+		<foreach collection="approvers" item="item" index="index" separator=",">
+			<if test='item != null and item != ""'>
+				(${docno},(${index}+1),${item})
+			</if>
+		</foreach>
+	</insert>
+	<insert id="insertReferrer" parameterType="com.olive.dto.Document">
+		
+		insert into REFERENCE (docno,empno)	values
+		<foreach collection="referrers" item="item" index="index" separator=",">
+		(${docno},${item}) 
+		</foreach>
+	</insert>
+
+
+	<select id="getAllEmpList" resultType="com.olive.dto.Emp">
+		select * from emp
+	</select>
+	<select id="getAllDeptList" resultType="com.olive.dto.Dept">
+		select * from dept d join head h on d.headCode = h.headCode
+	</select> 
+	<select id="getAllHeadList" resultType="com.olive.dto.Head">
+		select * from head
+	</select>
+	
+	<select id="getArrangedDocList" resultType="com.olive.dto.Document">
+		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , da.startdate, da.enddate, ds.statusname,dt.typename,e.ename
+		from document d join doc_add da join doc_status ds join doc_type dt join emp e 
+		on d.docno = da.document_docno and d.statuscode = ds.statuscode and d.typecode = dt.typecode and e.empno = d.empno
+		
+		where d.empno = ${param2} 
+		<if test='param1 != 50'>
+		and d.statusCode=${param1} 
+		</if>
+		
+		order by docno desc
+	</select>
+		<select id="getArrangedAppList" resultType="com.olive.dto.Approver">
+		select a.docno,e.empno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.curr_Approval
+		from approver a join document d join emp e
+		on a.docno=d.docno and e.empno=d.empno
+		 
+		where a.empno = ${param2} 
+		<if test='param1 eq 10'>
+		and ifnull(a.app_check,0)= 0 and (a.app_order-d.curr_Approval)=1 
+		</if>
+		<if test="param1 eq 20">
+		and ifnull(a.app_check,0)=1 and (d.total_Approval > d.curr_Approval)
+		</if>
+		<if test="param1 eq 30">
+		and (d.total_Approval = d.curr_Approval)
+		</if>
+		<if test="param1 eq 40">
+		and d.statusCode = 40
+		</if>
+		order by docno desc
+	</select>
+	
+	<update id="approve" parameterType="com.olive.dto.Approver">
+		update approver set app_date=now(),comment=#{comment}, app_check =#{app_Check} where docno =#{docno} and empno =#{empno}
+	</update>
+	
+	
+	
+		<select id="getListCount" resultType="Integer" parameterType="Hashmap">
+		 <![CDATA[
+		SELECT 
+			count(*) 
+		FROM 
+			${table}
+			
+		WHERE ${searchType} = ${keyword}
+		]]>
+		<if test='keyword2!="50"'>
+		<![CDATA[
+		and ${searchType2} =${keyword2}
+		]]>
+		</if>
+	</select>
+	<select id="getList" resultType="Hashmap" parameterType="Hashmap">
+	 	 <![CDATA[
+        SELECT
+            *
+        FROM 
+			${table}
+		WHERE ${searchType} = #{keyword}
+		]]>
+		<if test='keyword2!="50"'>
+		and ${searchType2} = #{keyword2}
+		</if>
+        ORDER BY ${column} ${sort}
+		LIMIT ${rowStart}, ${perPageNum}
+   		 
+	</select>
+	<select id="getAppList" resultType="Hashmap" parameterType="Hashmap">
+	 	 <![CDATA[
+        SELECT
+            *
+        FROM 
+			${table}
+		WHERE ${searchType} = #{keyword}
+		]]>
+		<if test='keyword2 eq 10'>
+		and ifnull(app_check,0)= 0 and (app_order-curr_Approval)=1 
+		</if>
+		<if test="keyword2 eq 20">
+		and ifnull(app_check,0)=1 and (total_Approval > curr_Approval)
+		</if>
+		<if test="keyword2 eq 30">
+		and (total_Approval = curr_Approval)and statusCode =30
+		</if>
+		<if test="keyword2 eq 40">
+		and statusCode = 40
+		</if>
+        ORDER BY ${column} ${sort}
+		LIMIT ${rowStart}, ${perPageNum}
+	</select>
+
+	<select id="getAppListCount" resultType="Integer" parameterType="Hashmap">
+		 <![CDATA[
+		SELECT 
+			count(*) 
+		FROM 
+			${table}
+			
+		WHERE ${searchType} = ${keyword}
+		]]>
+		<if test='keyword2 eq 10'>
+		and ifnull(app_check,0)= 0 and (app_order-curr_Approval)=1 
+		</if>
+		<if test="keyword2 eq 20">
+		and ifnull(app_check,0)=1 and (total_Approval > curr_Approval)
+		</if>
+		<if test="keyword2 eq 30">
+		and (total_Approval = curr_Approval) and statusCode =30
+		</if>
+		<if test="keyword2 eq 40">
+		and statusCode = 40
+		</if>
+		
+	</select>
+	
+	<select id="checkTypeName" resultType="int">
+		select count(*) from doc_form where formname LIKE CONCAT(#{typeName},'%')
+	</select>
+	
+	<insert id="addForm">
+		insert into doc_form (formname, content) values ( #{typename},#{content})
+	</insert>
+	
+	<select id="selectSpecialForm" resultType="String">
+		select content from doc_type where typeName=#{typeName}
+	</select>
+		
+	<select id="selectForm" resultType="String">
+		select content from doc_form where formname=#{formname}
+	</select>	
+	
+	<select id="formList" resultType="com.olive.dto.Doc_form">
+		select * from doc_form
+	</select>	
+	
+	<delete id="deleteDoc">
+		delete from document where docno = #{docno}
+	</delete>
+	
+	<select id="getFormContent" resultType="com.olive.dto.Doc_form">
+		select formName, content from doc_form where formName=#{formName}
+	</select>
+	
+	<delete	id="deleteForm">
+		delete from doc_form where formName = #{formName}
+	</delete>
+	
+	
+</mapper>

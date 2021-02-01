@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.utils.dao.PagingDao">
+	<select id="getListCount" resultType="Integer"
+		parameterType="Hashmap">
+		 <![CDATA[
+		SELECT 
+			count(*) 
+		FROM 
+			${table}
+		WHERE ${searchType} LIKE CONCAT(#{keyword},'%')
+		]]>
+	</select>
+
+	<select id="getList" resultType="Hashmap"
+		parameterType="Hashmap">
+	 	 <![CDATA[
+        SELECT
+            *
+        FROM 
+			${table}
+		WHERE ${searchType} LIKE CONCAT(#{keyword},'%')
+        ORDER BY ${column} ${sort}
+		LIMIT ${rowStart}, ${perPageNum}
+   		 ]]>
+	</select>
+</mapper>

@@ -1,0 +1,58 @@
+
+<!DOCTYPE>
+<html>
+<head>
+
+</head>
+ 
+<body >
+
+<div style="background-color:#f0f0f0; min-width:300px; padding:10px 0;text-align:center;">
+
+<table width="600px" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;" bgcolor="white">
+<tbody>
+    <tr>
+        <td >
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="white">  
+            <tbody>
+                <tr height="40">
+                    <td align="left" style="padding: 40px 0 0px 25px; border-left:1px solid #ededed; border-top:1px solid #ededed; border-right:1px solid #ededed;" >
+                        <h1 style="color:#62B942;">OLIVE</h1>
+                        <h3 style="font-size: 23px; color: #414141">환영합니다.</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" height="77" valign="top" style="border-left:1px solid #ededed; border-bottom:1px solid #ededed; border-right:1px solid #ededed; padding:0px 28px 20px 28px; ">
+                        <table  border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                             <td style="font-size: 15px; color: #696868;" >
+                                 <hr style="border:1px solid #ededed;">
+                                <br><br>
+								안녕하세요.<br>
+								OLIVE 시스템 이용을 위해 이메일 인증을 진행해주세요.<br>
+								한번의 인증으로 서비스를 편하게 즐길 수 있습니다.
+                             </td>
+                            </tr>
+                            <tr>
+                             <td style="font-weight:bold; font-size: 18px; padding: 20px 0 20px 0; color: #62B942;">
+                              ${certNumber}
+                              <br><br>
+                              <hr style="border:1px solid #ededed;">
+                             </td>
+                            </tr>
+                            <td style="color: #7F7F7F; font-size:12px">
+                               궁금하시거나 불편한점이 있으시다면, <span style="color:#62B942;">OLIVE</span> 인사담당자에게 문의해주세요.
+                               </td>
+                              </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

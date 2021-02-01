@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.attendance.dao.AttendanceDao">
+	<!-- 재형: 근태관리 캘린더 -->
+	<select resultType="com.olive.dto.Att_Record" id="gettableList">
+		select
+		a.attname as title,
+		ar.starttime as start,
+		ar.endtime as end,
+		a.color as color,
+		ar.attCode as attCode,
+		ar.date as date
+		FROM
+		Att_Record ar join ATTENDANCE a ON ar.ATTCODE =a.ATTCODE
+		where empno = #{empno}
+	</select>
+
+	<!-- 재형: 근태관리 캘린더 radio -->
+	<select resultType="com.olive.dto.Att_Record" id="gettableUserList">
+		select a.attname as title,
+		ar.starttime as start,
+		ar.endtime as end,
+		color 
+		FROM
+		Att_Record ar join ATTENDANCE a ON ar.ATTCODE =a.ATTCODE
+		where empno = #{param1}
+		
+	</select>
+
+	<!-- 재형 : 휴가관리 캘린더 -->
+	<select id="getanaltableList" resultType="com.olive.dto.Document">
+
+		select d.empno as empno,
+		d.title as title,
+		a.startdate as start,
+		a.enddate as end,
+		dt.color as color,
+        d.typecode
+		FROM document d
+		join doc_add a ON d.docno = a.document_docno
+        join doc_type dt on d.typecode = dt.typecode
+		where (d.typecode = 30 or d.typecode = 20) and d.STATUSCODE = 30 and d.empno = #{empno}
+		
+
+	</select>
+
+	<!-- 재형 : 휴가관리 캘린더 radio -->
+	<select id="getanaltableUserList" resultType="com.olive.dto.Document">
+
+		select d.empno as empno,
+		d.title as title,
+		a.startdate as start,
+		a.enddate as end,
+		dt.color as color,
+        d.typecode
+		FROM document d
+		join doc_add a ON d.docno = a.document_docno
+        join doc_type dt on d.typecode = dt.typecode
+		where (d.typecode = 30 or d.typecode = 20) and d.STATUSCODE = 30 and d.empno = #{param1}
+		
+	</select>
+	<!-- 재형 : 휴가관리 카드 -->
+	<select id="annualCard" resultType="com.olive.dto.Document">
+		select e.empno, e.ename, e.annual, IFNULL(sum(da.timediff),0) as COUNT,
+		IFNULL((e.annual - sum(da.timediff)),0) as DIFF
+		from document d
+		right outer
+		join emp e on d.empno = e.empno
+		left outer
+		join doc_add da on da.document_docno = d.docno
+		group by empno
+		having empno = #{empno}
+	</select>
+
+	<!-- 재형: 출근버튼 -->
+	<update id="startwork" parameterType="com.olive.dto.Att_Record">
+		update ATT_RECORD
+		set attcode = #{attCode}, starttime = now()
+		where date_format(date, '%Y-%m-%d')=curdate() and empno = #{empNo}
+	</update>
+
+	<!-- 재형: 퇴근버튼 -->
+	<update id="endwork" parameterType="com.olive.dto.Att_Record">
+		update ATT_RECORD
+		set attcode = #{attCode},
+		endtime = now()
+		where date_format(date, '%Y-%m-%d')=curdate() and empno = #{empNo}
+	</update>
+
+	<!-- 희승 : 이번 주의 총 근무시간 -->
+	<select id="getHoursPerWeek" resultType="com.olive.dto.WorkHourPerWeek">
+		SELECT 	DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 ), '%Y.%m.%d') 
+				as 'startOfWeek',
+				DATE_FORMAT(ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 ), '%Y.%m.%d') 
+				as 'endOfWeek',
+				Att.empNo,
+				SUM(Att.Hours) as 'totalHour',
+				SUM(Att.Minutes) as 'totalMinutes'
+				FROM
+				(
+					SELECT 	date,
+							empNo,
+							IF( TIMESTAMPDIFF(MINUTE, starttime, endtime) >= 540 , 
+			        			(TIMESTAMPDIFF(HOUR, starttime, endtime) - 1),
+			        			TIMESTAMPDIFF(HOUR, starttime, endtime)
+			        		) 
+							as 'Hours',
+							TIMESTAMPDIFF(MINUTE, (starttime), (endtime) ) % 60
+			        		AS 'Minutes'
+					FROM att_record
+					WHERE empNo = #{empno} 
+					AND
+					date BETWEEN ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 )
+					AND 
+					ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 )
+		        ) 
+				AS Att
+	</select>
+
+	<!-- 희승 : 이번 주의 요일별 근무시간 -->
+	<select id="getHoursEachDays" resultType="com.olive.dto.Att_Record">
+		SELECT 	date,
+		empNo,
+		attCode,
+		CASE DAYOFWEEK(date)
+		WHEN '1' THEN '일' WHEN '2' THEN '월' WHEN '3' THEN '화' WHEN '4' THEN '수'
+		WHEN '5' THEN '목' WHEN '6' THEN '금' WHEN '7' THEN '토'
+		END AS weekdays,
+		
+        starttime AS 'start',
+		
+        endtime AS 'end',
+		IF(
+        TIMESTAMPDIFF(MINUTE, starttime, endtime) >= 480 , 
+        (TIMESTAMPDIFF(HOUR, starttime, endtime) - 1),
+        TIMESTAMPDIFF(HOUR, starttime, endtime)
+        )
+		AS 'dayTotalHours',
+		
+        TIMESTAMPDIFF(MINUTE, (starttime), (endtime) ) % 60 
+		AS 'dayTotalMinutes',
+		
+        IF (
+		( TIMESTAMPDIFF(MINUTE, (starttime), (endtime))) - 60 > 480,
+		truncate((TIMESTAMPDIFF(MINUTE, (starttime), (endtime)) -60 - 480) / 60, 0),
+		0
+		)
+		AS 'OverHours',
+		
+        IF (
+		(TIMESTAMPDIFF(MINUTE, starttime, endtime) - 60) > 480,
+		TIMESTAMPDIFF(MINUTE, (starttime), (endtime)) % 60,
+		0
+		)
+		AS 'OverMinutes'
+		
+        FROM att_record
+		WHERE empNo = #{empno}
+		AND date BETWEEN ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 0 )
+		AND ADDDATE( CURDATE(), - WEEKDAY(CURDATE()) + 6 )
+	</select>
+
+	<!-- 근태 페이징 리스트 카운트 -->
+	<select id="getListCount" resultType="Integer" parameterType="Hashmap">
+		<![CDATA[
+		SELECT 
+			count(*) 
+		FROM 
+			${table}
+		WHERE ${searchType} = #{keyword}
+		]]>
+		<if test='keyword2 != "1"'>
+			AND ${searchType2} = #{keyword2}
+		</if>
+	</select>
+
+	<!-- 근태 페이징 리스트 반환 -->
+	<select id="getList" resultType="Hashmap" parameterType="Hashmap">
+		<![CDATA[
+        SELECT
+            *
+        FROM 
+			${table}
+		WHERE ${searchType} = #{keyword}
+		]]>
+		<if test='keyword2 neq "1"'>
+			AND ${searchType2} = #{keyword2}
+		</if>
+		<![CDATA[
+        ORDER BY ${column} ${sort}
+		LIMIT ${rowStart}, ${perPageNum}
+   		 ]]>
+	</select>
+
+	<select id="getAttList" resultType="Hashmap" parameterType="Hashmap">
+		<![CDATA[
+        SELECT
+            *
+        FROM 
+			${table}
+		WHERE ${searchType} = #{keyword}
+        ORDER BY ${column} ${sort}
+		LIMIT ${rowStart}, ${perPageNum}
+   		 ]]>
+	</select>
+
+	<!-- 로그인 한 사원의 부서이름 반환 -->
+	<select id="getDeptName" resultType="String">
+		SELECT deptName
+		FROM empinfo
+		WHERE empno = #{empno}
+	</select>
+
+	<!-- 출,퇴근 확인 -->
+	<select id="isPunchedIn" resultType="Hashmap">
+		SELECT starttime AS 'start',
+		endtime AS 'end'
+		FROM rectable
+		WHERE
+		empno = #{empno} AND
+		DATE_FORMAT(starttime, '%y-%m-%d') = DATE_FORMAT(NOW(), '%y-%m-%d')
+	</select>
+</mapper>

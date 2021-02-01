@@ -1,0 +1,21 @@
+
+.input{
+	padding-top: 2px;
+	 position: center;
+	 display: inline-block;
+}
+
+
+.input-group-append > button{
+	border-radius: 10px; 
+	font-weight: bold;
+  	color: #fff;
+  	margin-left : 30%;
+ 	box-shadow:1rm;
+}
+#startWork{
+  	background: #36b9cc;
+}
+#endWork{
+  	background: #e74a3b;
+}

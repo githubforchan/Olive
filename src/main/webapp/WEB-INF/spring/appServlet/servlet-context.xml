@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans 
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+	<context:component-scan base-package="com.olive" />
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="order" value="1" />
+	</beans:bean>
+
+	<!-- ViewResolver -->
+	<beans:bean
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="0" />
+	</beans:bean>
+
+	<!-- for BeanNameViewResolver -->
+	<beans:bean id="empTableToExcel"	class="com.olive.utils.EmpTableToExcel" />
+	<!-- for BeanNameViewResolver -->
+	<beans:bean id="salaryExcelFormat"	class="com.olive.utils.SalaryExcelFormat" />
+	<beans:bean id="pagingService" class="com.olive.utils.service.PagingService"/>
+	
+	<!-- Transaction 관련 Bean 객체생성 & Injection 작업 -->
+   <beans:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<beans:property name="dataSource" ref="driverManagerDataSource" /> 
+   </beans:bean>
+   
+	
+	<tx:annotation-driven transaction-manager="transactionManager"/> 
+	
+	<!-- WEB socket-handler 2020-01-09 박선우 -->
+	<websocket:handlers>
+		<websocket:mapping handler="AlarmHandler"
+			path="/alarm.do" />
+			<!-- <websocket:handshake-interceptors>
+			<beans:bean class=""></beans:bean>
+		</websocket:handshake-interceptors> -->
+		</websocket:handlers>
+	<beans:bean id="AlarmHandler" class="com.olive.utils.controller.AlarmHandler"/>
+	
+	<!-- AspectJ 라이브러리를 이용한 Proxy 객체 생성 -->
+	<aop:aspectj-autoproxy/>
+	<beans:bean id="loggerAspect" class="com.olive.utils.LoggerAspect"/>
+	<beans:bean id="monitoringAspect" class="com.olive.utils.MonitoringAspect"/>
+</beans:beans>

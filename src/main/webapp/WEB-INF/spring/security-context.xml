@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+		http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<!-- 시큐리티 컨텍스트에서 autowired등 어노테이션 사용 -->
+	<context:annotation-config />
+
+	<!-- 시큐리티 컨텍스트에서 Service등 사용 -->
+	<context:component-scan
+		base-package="com.olive.authentication" />
+
+
+	<security:http auto-config="true" use-expressions="true">
+		<security:csrf disabled="true" />
+		<security:form-login username-parameter="empno"
+			password-parameter="pwd" login-page="/goToLogin.do"
+			authentication-success-handler-ref="loginSuccessHandler"
+			authentication-failure-handler-ref="loginFailHandler" />
+
+		<!-- authentication-failure-url="/goToLogin.do?error" -->
+
+		<security:logout logout-success-url="/goToLogin.do" />
+		<security:intercept-url
+			pattern="/HR_management/**"
+			access="hasRole('ROLE_HR')" />
+		
+		<security:intercept-url pattern="/approval/AddForm.do" access="hasRole('ROLE_HR')" 
+			/>
+		<security:access-denied-handler error-page="/error/403.do"/>
+		<!-- 중복 로그인 방지 -->
+		<security:session-management
+			invalid-session-url="/goToLogin.do"
+			session-fixation-protection="migrateSession">
+			<security:concurrency-control
+				max-sessions="1" expired-url="/goToLogin" />
+		</security:session-management>
+		<!-- invalid-session-url : 세션이 끊겼을때 이동 할 페이지 입니다. max-session : 최대 허용 가능 
+			중복 세션 수 expired-url : 중복 로그인 일어났을 때 이동 할 페이지 error-if-maximum-exceeded =true 
+			첫번째 로그인한 세션을 유지하고 두번째 중복 로그인 한 세션을 막으려고 다음과 같이 설정 -->
+	</security:http>
+
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:jdbc-user-service
+				data-source-ref="logDataSource"
+				users-by-username-query="select empno, pwd, enabled from emp where empno = ?"
+				authorities-by-username-query="SELECT e.empno, r.role_name  
+                                               FROM emp e JOIN role r 
+                                               ON e.empno = r.empno 
+                                               where e.empno = ?" />
+			<security:password-encoder
+				ref="bCryptPasswordEncoder" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+	<!-- 커스텀 Login Success Handler Bean : authentication-success-handler-ref="loginSuccessHandler" -->
+	<beans:bean id="loginSuccessHandler"
+		class="com.olive.authentication.handler.LoginSuccessHandler">
+		<beans:property name="empno" value="empno" />
+		<beans:property name="defaultTargetUrl"
+			value="/goToMain.do" />
+	</beans:bean>
+
+	<!-- 커스텀 Login Fail Handler Bean : authentication-failure-handler-ref="loginFailHandler" -->
+	<beans:bean id="loginFailHandler"
+		class="com.olive.authentication.handler.LoginFailHandler">
+		<beans:property name="empno" value="empno" />
+		<beans:property name="pwd" value="pwd" />
+		<beans:property name="errorMsgName" value="ERROR_MSG" />
+		<beans:property name="defaultFailureUrl"
+			value="/goToLogin.do?error" />
+	</beans:bean>
+
+</beans:beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.utils.dao.AlarmDao">
+
+	<insert id ="insertAlarm" parameterType="com.olive.dto.Alarm">
+	<selectKey resultType="int" keyProperty="alarmno" order="BEFORE">
+        SELECT ifnull(MAX(alarmno),0)+1 FROM alarm       
+    </selectKey>    
+	insert into alarm (alarmno,alarmtime,empno,content,alarmcheck,color)
+	values (#{alarmno},now(),#{empno},#{content},0,#{color})
+	</insert>
+	
+	<select id="getAlarmList" resultType="com.olive.dto.Alarm">
+	select alarmTime, content, color,alarmno,alarmcheck
+	from alarm where empno=#{param1}
+	order by alarmno desc
+	limit #{param2},#{param3}
+	</select>
+	
+	<select id="alarmCount" resultType="int">
+		select count(*) from alarm where alarmcheck=0 and empno=#{empno}
+	</select>
+	
+	<update id="readAlarm">
+		update alarm set alarmcheck=1 where alarmno = #{alarmno}
+	</update>
+	
+	
+	<update id="readAllAlarm">
+		update alarm set alarmcheck=1 where empno=#{empno}
+	</update>
+	
+</mapper>

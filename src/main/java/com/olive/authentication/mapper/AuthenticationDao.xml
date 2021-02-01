@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.authentication.dao.AuthenticationDao">
+	<select id="getFailCount" resultType="Integer">
+	 	SELECT 
+	 	if(loginCount=null, 0, loginCount) as logincount
+		FROM emp where empno = #{empno}
+	</select>
+	
+	<select id="selectEmp" resultType="com.olive.dto.Emp">
+		SELECT empno, statusCode
+		FROM emp
+		WHERE empno = #{empno}
+	</select>
+	
+	<update id="addFailCount">
+		UPDATE emp
+		SET loginCount = IF(loginCount=null, 0, loginCount) + 1
+		WHERE empno = #{empno};
+	</update>
+	
+	<update id="disable">
+		UPDATE emp 
+		SET statusCode = 40, enabled = 0
+		WHERE empno = #{empno}
+	</update>
+	
+	<update id="initFailCount">
+		UPDATE emp 
+		SET loginCount = 0
+		WHERE empno = #{empno}
+	</update>
+	
+	<update id="updateEmail">
+		UPDATE emp
+		SET email = #{email}
+		WHERE empno = #{empNo}
+	</update>
+	
+	<insert id="setGeneralRole">
+		INSERT INTO role (empno, role_name)
+		SELECT #{empno}, 'ROLE_GENERAL' 
+		FROM DUAL 
+		WHERE NOT EXISTS ( 	SELECT empno, role_name 
+							FROM role 
+							WHERE empno= #{empno} AND role_name = 'ROLE_GENERAL'
+						 )
+	</insert>
+	
+	<update id="setActivate">
+		UPDATE emp
+		SET statusCode = 20
+		WHERE empno = #{empno}
+	</update>
+</mapper>

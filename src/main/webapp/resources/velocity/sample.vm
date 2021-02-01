@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    body {margin:0 auto; padding:0;  font-family:'dotum', '돋움' ,sans-serif;  font-size:12px;  color:#616161; }
+    .top_bg {background:top center no-repeat;}
+    p {margin:0;}
+</style>
+</head>
+ 
+<body>
+
+<div style="text-align:center">
+</div>
+<table width="600px" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;">
+<tbody>
+    <tr>
+        <td style="padding:0 20px; ">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" >
+            <thead style="background-color:#4c5a67">
+                <tr height="40">
+                    <th align="left" style="padding-left:25px; font-size:14px;"><font color="#ffffff"><b>회원탈퇴</b></font></th>
+                </tr>
+            </thead>    
+            <tbody>
+                <tr>
+                    <td align="left" height="77" valign="top" style="border-left:1px solid #7aa4b7; border-bottom:1px solid #7aa4b7; border-right:1px solid #7aa4b7; padding:28px 28px 20px 28px; background:url([_IMGURL_]/mail/conf_bg.gif) 98% center no-repeat;">
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0" >
+                        <tbody>
+                            <tr>
+                                <td width="200" height="200" valign="top"><font color="#006190">${content}</font></td>
+                               
+                            </tr>
+                
+                        </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+
+</body>
+</html>

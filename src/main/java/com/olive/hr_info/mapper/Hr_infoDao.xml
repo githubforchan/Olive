@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.olive.hr_info.dao.Hr_infoDao">
+ 	 
+ 	 <!-- 전체 사원 목록 조회 -->
+ 	 <select id="showEmpList" resultType="com.olive.dto.Emp">
+	    select emp.empno, emp.ename, emp.phone, emp.address, emp.email, dept.deptname, position.positionname, acc_status.statuscode, head.headname
+		from emp join dept on emp.deptcode = dept.deptcode
+			 join position on emp.positioncode = position.positioncode
+	         join acc_status on emp.statuscode = acc_status.statuscode
+	         join head on dept.headcode = head.headcode
+ 	 </select> 
+ 	 
+ 	 <!-- 사원 조건 조회 SelectBox (사번+이름+부서)-->
+ 	 <select id="searchEmp" parameterType="map" resultType="com.olive.dto.Emp">
+	    select emp.empno, emp.ename, dept.deptname, position.positionname, acc_status.statuscode
+		from emp join dept on emp.deptcode = dept.deptcode
+			 join position on emp.positioncode = position.positioncode
+	         join acc_status on emp.statuscode = acc_status.statuscode
+	         <where>
+		         <if test="param1 == 'empno'">emp.empno = #{param2}</if>
+		         <if test="param1 == 'ename'">OR emp.ename = #{param2}</if>
+		         <if test="param1 == 'dept'">OR dept.deptname = #{param2}</if>
+		     </where>
+ 	 </select> 
+ 	 
+ 	 <!-- 사번으로 사원 조회  -->
+ 	 <!-- empinfo로 가져올거임 -->
+ 	 <select id="searchEmpByEmpno" resultType="Hashmap">
+	    SELECT *
+	    FROM empinfo
+	    WHERE empno = #{empno}
+ 	 </select>  
+ 	 
+ 	 <!-- 비밀번호 재설정용 emp email로 찾기 -->
+ 	 <select id="checkEmail_Pwd" resultType="com.olive.dto.Emp">
+	    SELECT *
+	    FROM emp
+	    WHERE email = #{email}
+ 	 </select>  
+ 	  	 
+ 	 <!-- email로 비밀번호 재설정-->
+ 	 <update id="updatePwd" parameterType="HashMap">
+	    update emp
+	    set pwd = #{pwd}
+	    where email = #{email}
+ 	 </update> 
+ 	 
+ 	 
+ 	 
+ 	 <!-- 본부 조직도 (미완성) -->
+ 	 <select id="showOrg" resultType="com.olive.dto.DeptTest">
+ 	 	select dept.deptcode, dept.deptname, head.headname
+		from dept join head on dept.headcode = head.headcode
+ 	 </select>
+ 	 
+ 	 <!-- 부서별 조직도 -->
+ 	 <select id="showOrgbyDept" resultType="com.olive.dto.DeptTest">
+ 	 	select emp.ename, dept.deptname, head.headname, position.positionname
+		from emp
+			inner join dept on emp.deptcode = dept.deptcode
+		    inner join head on dept.headcode = head.headcode
+		    inner join position on emp.positioncode = position.positioncode
+		 where dept.deptname = #{param}
+ 	 </select>
+ 	 
+ 	 
+ 	 <!-- 내 정보 수정 -->
+	 <update id="updateMyInfo">
+	 	update emp
+	 	set email = #{email}, phone = #{phone}, address = #{address}, pwd = #{pwd}
+	 	<if test="pic!=null and pic != ''">
+	 	,pic = #{pic}
+	 	</if> 
+	 	where empno = #{empNo}
+	 </update>
+	 
+</mapper>
+
+
+
+
+
+
