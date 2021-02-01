@@ -1500,3 +1500,105 @@ com.olive.hr_management.service.Hr_managementService.getEmpInfo 시작!
 arg[0] : 170412002
 com.olive.hr_management.service.Hr_managementService.getEmpInfo 종료!
 com.olive.hr_management.controller.Hr_ManagementRestController.getAttbyEmpno 종료!
+com.olive.approval.service.ApprovalService.getDocument 시작!
+arg[0] : 190912001
+com.olive.approval.service.ApprovalService.getDocument 종료!
+com.olive.approval.service.ApprovalService.getApprover 시작!
+arg[0] : 190912001
+com.olive.approval.service.ApprovalService.getApprover 종료!
+com.olive.approval.service.ApprovalService.arrangedAppDoc 시작!
+arg[0] : []
+com.olive.approval.service.ApprovalService.arrangedAppDoc 종료!
+com.olive.approval.service.ApprovalService.arrangeDoc 시작!
+arg[0] : []
+com.olive.approval.service.ApprovalService.arrangeDoc 종료!
+com.olive.attendance.service.AttendanceService.arrangedAtt 시작!
+com.olive.attendance.service.AttendanceService.arrangedAtt 종료!
+com.olive.approval.service.ApprovalService.selectEmp 시작!
+arg[0] : 190912001
+com.olive.approval.service.ApprovalService.selectEmp 종료!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 시작!
+arg[0] : 190912001
+com.olive.utils.controller.AlarmRestController.alarmCount 시작!
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 시작!
+arg[0] : 190912001
+arg[0] : 190912001
+com.olive.utils.service.AlarmService.alarmCount 시작!
+arg[0] : 190912001
+com.olive.utils.service.AlarmService.alarmCount 종료!
+com.olive.utils.controller.AlarmRestController.alarmCount 종료!
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 종료!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 종료!
+com.olive.utils.controller.error.Error404 시작!
+com.olive.utils.controller.error.Error404 종료!
+com.olive.hr_management.controller.Hr_ManagementController.organization 시작!
+arg[0] : {criteria=Criteria(table=null, column=null, sort=null, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0), org.springframework.validation.BindingResult.criteria=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
+arg[1] : Criteria(table=null, column=null, sort=null, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.hr_management.service.Hr_managementService.getOrganizationInfo 시작!
+com.olive.hr_management.service.Hr_managementService.getOrganizationInfo 종료!
+com.olive.utils.service.PagingService.getListCount 시작!
+arg[0] : Criteria(table=empinfo, column=empno, sort=desc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getListCount 종료!
+com.olive.utils.service.PagingService.getList 시작!
+arg[0] : Criteria(table=empinfo, column=empno, sort=desc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getList 종료!
+com.olive.hr_management.controller.Hr_ManagementController.organization 종료!
+com.olive.hr_management.controller.Hr_ManagementRestController.getPieChartData 시작!
+com.olive.hr_management.controller.Hr_ManagementRestController.getLineChartData 시작!
+com.olive.hr_management.service.Hr_managementService.getPieChartData 시작!
+com.olive.hr_management.service.Hr_managementService.getLineChartData 시작!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 시작!
+arg[0] : 190912001
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 시작!
+arg[0] : 190912001
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 종료!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 종료!
+com.olive.hr_management.service.Hr_managementService.getPieChartData 종료!
+com.olive.hr_management.controller.Hr_ManagementRestController.getPieChartData 종료!
+com.olive.utils.controller.AlarmRestController.alarmCount 시작!
+arg[0] : 190912001
+com.olive.utils.service.AlarmService.alarmCount 시작!
+arg[0] : 190912001
+com.olive.utils.service.AlarmService.alarmCount 종료!
+com.olive.utils.controller.AlarmRestController.alarmCount 종료!
+com.olive.hr_management.service.Hr_managementService.getLineChartData 종료!
+com.olive.hr_management.controller.Hr_ManagementRestController.getLineChartData 종료!
+com.olive.utils.controller.error.Error404 시작!
+com.olive.utils.controller.error.Error404 종료!
+com.olive.hr_management.controller.Hr_ManagementController.employeeAttendance 시작!
+arg[0] : {criteria=Criteria(table=null, column=null, sort=null, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0), org.springframework.validation.BindingResult.criteria=org.springframework.validation.BeanPropertyBindingResult: 0 errors}
+arg[1] : Criteria(table=null, column=null, sort=null, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+arg[2] : Criteria(table=null, column=null, sort=null, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getListCount 시작!
+arg[0] : Criteria(table=emp_att, column=starttime, sort=desc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getListCount 종료!
+com.olive.utils.service.PagingService.getListCount 시작!
+arg[0] : Criteria(table=empAnnual, column=empno, sort=asc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getListCount 종료!
+com.olive.utils.service.PagingService.getList 시작!
+arg[0] : Criteria(table=emp_att, column=starttime, sort=desc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getList 종료!
+com.olive.utils.service.PagingService.getList 시작!
+arg[0] : Criteria(table=empAnnual, column=empno, sort=asc, searchType=1, keyword=1, page=1, perPageNum=5, rowStart=0)
+com.olive.utils.service.PagingService.getList 종료!
+com.olive.hr_management.controller.Hr_ManagementController.employeeAttendance 종료!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 시작!
+arg[0] : 190912001
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 시작!
+arg[0] : 190912001
+com.olive.utils.controller.AlarmRestController.alarmCount 시작!
+arg[0] : 190912001
+com.olive.utils.service.AlarmService.alarmCount 시작!
+arg[0] : 190912001
+com.olive.hr_info.service.Hr_infoService.searchEmpByEmpno 종료!
+com.olive.hr_info.controller.HRAjaxController.searchEmpByEmpno 종료!
+com.olive.utils.service.AlarmService.alarmCount 종료!
+com.olive.utils.controller.AlarmRestController.alarmCount 종료!
+com.olive.hr_management.controller.Hr_ManagementRestController.getAttGroupByDept 시작!
+arg[0] : 인사팀
+com.olive.hr_management.service.Hr_managementService.getAttGroupByDept 시작!
+arg[0] : 인사팀
+com.olive.utils.controller.error.Error404 시작!
+com.olive.utils.controller.error.Error404 종료!
+com.olive.hr_management.service.Hr_managementService.getAttGroupByDept 종료!
+com.olive.hr_management.controller.Hr_ManagementRestController.getAttGroupByDept 종료!
