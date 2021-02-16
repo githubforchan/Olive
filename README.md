@@ -67,7 +67,7 @@
 
 ### **Dynamic Query**
 
-![image-20210216101925386](./images/dynamicQuery.PNG)
+![image-20210216101925386](./images/DynamicQuery.PNG)
 
 
 
@@ -79,7 +79,7 @@
 
 ### **GeoLocation** **&** **날씨** **API**
 
-![image-20210216104500835](./images/geoLocation.PNG)
+![image-20210216104500835](./images/GeoLocation.PNG)
 
 
 
