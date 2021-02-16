@@ -24,7 +24,7 @@
 
 ### Spring Security 로그인
 
-![](C:\Users\82109\Desktop\workspace\spring\Olive\images\securityLogin.PNG)
+![](images\securityLogin.PNG)
 
 
 
