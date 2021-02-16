@@ -1,13 +1,9 @@
 package com.olive.utils;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 //게시판 페이징 전용 클래스
-@Getter
-@Setter
-@ToString
+@Data
 public class Pagination {
 	
 	private Criteria cri;

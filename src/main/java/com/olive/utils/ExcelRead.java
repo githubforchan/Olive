@@ -27,11 +27,9 @@ public class ExcelRead {
 		Workbook workbook = ExcelFileType.getWorkbook(excelReadOption.getFilePath());
 
 		Sheet sheet = workbook.getSheetAt(0);
-		System.out.println("Sheet 이름: " + workbook.getSheetName(0));
-		System.out.println("데이터가 있는 Sheet의 수 :" + workbook.getNumberOfSheets());
 
 		int numOfRows = sheet.getPhysicalNumberOfRows();
-		System.out.println(numOfRows);
+//		System.out.println(numOfRows);
 		int numOfCells = 0;
 
 		Row row = null;

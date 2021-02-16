@@ -18,7 +18,6 @@ import org.json.simple.parser.ParseException;
 
 public class NewsAPI {
 
-	@SuppressWarnings("finally")
 	public JSONObject returnNewsData() {
 		String clientId = "stsDWI_sO1zjz8AdiZPL";
 		String clientSecret = "efLBesLjgl";
@@ -38,12 +37,12 @@ public class NewsAPI {
 
 		// 결과값
 		String responseBody = get(apiURL, requestHeaders);
-
+		
 		// JSON으로 변환
 		JSONParser jsonParse = new JSONParser();
 		JSONObject result = null;
 		try {
-			result = (JSONObject) jsonParse.parse(responseBody);
+			result = (JSONObject) jsonParse.parse(URLEncoder.encode(responseBody, "UTF-8"));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally{

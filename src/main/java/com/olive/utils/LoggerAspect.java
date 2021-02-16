@@ -13,7 +13,7 @@ public class LoggerAspect {
 
 	final static Log log = LogFactory.getLog(LoggerAspect.class);
 	
-	@Around("within(com.olive.*.*.*)")
+	@Around("within(com.olive.service.*.*)")
 	public Object logOperations(ProceedingJoinPoint joinpoint) throws Throwable {
 
 		String targetClassName = joinpoint.getTarget().getClass().getName();

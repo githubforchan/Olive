@@ -16,7 +16,7 @@ public class MonitoringAspect {
 	private static Log log = LogFactory.getLog(MonitoringAspect.class);
 	
 
-	@Around("within(com.olive.*.*.*)")
+	@Around("within(com.olive.dao.*.*)")
 	public Object doDAOMonitoring(ProceedingJoinPoint joinpoint) throws Throwable {
 		StopWatch clock = new StopWatch("Profiling ...");
 

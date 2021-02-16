@@ -12,7 +12,7 @@
 	</select>
 	<!--내가 기안한 문서 가지고 오는거-->
 	<select id="getDocument" resultType="com.olive.dto.Document">
-		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , ds.statusname,dt.typename,e.ename,d.empno,d.filename
+		select d.docno, d.writedate, d.title, d.total_approval, d.curr_approval, d.statuscode, d.typecode , ds.statusname,dt.typename,e.ename,d.empno,d.filename
 		from document d join doc_status ds join doc_type dt join emp e 
 		on d.statuscode = ds.statuscode and d.typecode = dt.typecode and d.empno=e.empno
 		where d.empno = #{empno}
@@ -20,14 +20,14 @@
 	
 		<!--문서 번호로 결재자 가지고 오는거-->
 	<select id="viewApprovers" resultType="com.olive.dto.Approver">
-		select a.app_Order,a.app_Check, a.app_Date,a.comment, d.total_Approval, d.curr_Approval, d.title, d.writedate ,e.ename,dep.deptname,p.positionname,e.empno
+		select a.app_order,a.app_check, a.app_date,a.comment, d.total_approval, d.curr_approval, d.title, d.writedate ,e.ename,dep.deptname,p.positionname,e.empno
 		from document d join approver a join emp e join dept dep join position p 
-		on d.docno=a.docno and a.empno = e.empno and e.deptCode = dep.deptCode and e.positioncode = p.positioncode
-		where d.docno = #{docNo} order by app_Order asc
+		on d.docno=a.docno and a.empno = e.empno and e.deptcode = dep.deptcode and e.positioncode = p.positioncode
+		where d.docno = #{docno} order by app_order asc
 	</select> 
 			<!--문서 번호로 문서 가지고 오는거-->
 	<select id="viewDocument" resultType="com.olive.dto.Document">
-		select d.docno,d.empno, d.writedate, d.title, d.total_Approval, d.content, d.curr_Approval, d.statusCode, d.typeCode, d.statusname,d.typename,d.ename,da.startdate as start ,da.enddate as end ,d.filename 
+		select d.docno,d.empno, d.writedate, d.title, d.total_approval, d.content, d.curr_approval, d.statuscode, d.typecode, d.statusname,d.typename,d.ename,da.startdate as start ,da.enddate as end ,d.filename 
 		from viewdocument d left join doc_add da
 		on da.document_docno=d.docno
 		where d.docno = #{docno}
@@ -35,11 +35,11 @@
 	 
 	<!--내가 기안한 문서 페이징 처리 가지고 오는거-->
 	<select id="getDocumentRec" resultType="com.olive.dto.Document">
-		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , ds.statusname,dt.typename,e.ename 
+		select d.docno, d.writedate, d.title, d.total_approval, d.curr_approval, d.statuscode, d.typecode , ds.statusname,dt.typename,e.ename 
 		from document d join doc_status ds join doc_type dt join emp e 
 		on d.statuscode = ds.statuscode and d.typecode = dt.typecode and d.empno=e.empno
 		where d.empno = #{param1}
-		order by writeDate desc
+		order by writedate desc
 		
 		<if test="param2 != null and param3 != null">
 			limit #{param3} offset #{param2}
@@ -48,7 +48,7 @@
 	</select> 
 	<!-- 메인에 결재 관련 정보 뿌려 주기-->
 	<select id="getApprover" resultType="com.olive.dto.Approver">
-		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.typeCode,d.total_Approval,d.curr_Approval,dt.typename
+		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statuscode,d.typecode,d.total_approval,d.curr_approval,dt.typename
 		from approver a join document d join emp e join doc_type dt
 		on a.docno=d.docno and e.empno=d.empno and d.typecode = dt.typecode
 		where a.empno = #{empno}
@@ -57,18 +57,18 @@
 	</select>
 	<!-- 메인에 결재 관련 정보 페이징 처리  뿌려 주기-->
 	<select id="getApproverRec" resultType="com.olive.dto.Approver">
-		select a.docno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.total_Approval,d.curr_Approval
+		select a.docno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statuscode,d.total_approval,d.curr_approval
 		from approver a join document d join emp e
 		on a.docno=d.docno and e.empno=d.empno
 		where a.empno = #{param1}
-		order by d.writeDate desc 
+		order by d.writedate desc 
 		<if test="param2 != null and param3 != null">
 		limit  #{param3} offset #{param2}
 		</if>
 	</select>
 	<!-- 참조자 하나 만들어 놓기 -->
 	<select id="getRefference" resultType="com.olive.dto.Reference">
-		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.typeCode,d.total_Approval,d.curr_Approval,dt.typename
+		select a.docno , a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statuscode,d.typecode,d.total_approval,d.curr_approval,dt.typename
 		from approver a join document d join emp e join doc_type dt join reference r
 		on a.docno=d.docno and e.empno=d.empno and d.typecode = dt.typecode and d.docno=r.docno
         where r.empno = #{empno}
@@ -122,14 +122,14 @@
 		select * from emp
 	</select>
 	<select id="getAllDeptList" resultType="com.olive.dto.Dept">
-		select * from dept d join head h on d.headCode = h.headCode
+		select * from dept d join head h on d.headcode = h.headcode
 	</select> 
 	<select id="getAllHeadList" resultType="com.olive.dto.Head">
 		select * from head
 	</select>
 	
 	<select id="getArrangedDocList" resultType="com.olive.dto.Document">
-		select d.docno, d.writedate, d.title, d.total_Approval, d.curr_Approval, d.statusCode, d.typeCode , da.startdate, da.enddate, ds.statusname,dt.typename,e.ename
+		select d.docno, d.writedate, d.title, d.total_approval, d.curr_approval, d.statuscode, d.typecode , da.startdate, da.enddate, ds.statusname,dt.typename,e.ename
 		from document d join doc_add da join doc_status ds join doc_type dt join emp e 
 		on d.docno = da.document_docno and d.statuscode = ds.statuscode and d.typecode = dt.typecode and e.empno = d.empno
 		
@@ -141,7 +141,7 @@
 		order by docno desc
 	</select>
 		<select id="getArrangedAppList" resultType="com.olive.dto.Approver">
-		select a.docno,e.empno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statusCode,d.curr_Approval
+		select a.docno,e.empno, a.app_order, a.app_date, a.comment, a.app_check,d.title,e.ename,d.writedate,d.statuscode,d.curr_approval
 		from approver a join document d join emp e
 		on a.docno=d.docno and e.empno=d.empno
 		 
@@ -150,19 +150,19 @@
 		and ifnull(a.app_check,0)= 0 and (a.app_order-d.curr_Approval)=1 
 		</if>
 		<if test="param1 eq 20">
-		and ifnull(a.app_check,0)=1 and (d.total_Approval > d.curr_Approval)
+		and ifnull(a.app_check,0)=1 and (d.total_approval > d.curr_approval)
 		</if>
 		<if test="param1 eq 30">
-		and (d.total_Approval = d.curr_Approval)
+		and (d.total_approval = d.curr_approval)
 		</if>
 		<if test="param1 eq 40">
-		and d.statusCode = 40
+		and d.statuscode = 40
 		</if>
 		order by docno desc
 	</select>
 	
 	<update id="approve" parameterType="com.olive.dto.Approver">
-		update approver set app_date=now(),comment=#{comment}, app_check =#{app_Check} where docno =#{docno} and empno =#{empno}
+		update approver set app_date=now(),comment=#{comment}, app_check =#{app_check} where docno =#{docno} and empno =#{empno}
 	</update>
 	
 	

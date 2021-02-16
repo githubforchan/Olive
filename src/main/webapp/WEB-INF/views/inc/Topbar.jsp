@@ -169,7 +169,7 @@ function date(){
 
 function connect(){
 
-	websocket = new WebSocket('ws://192.168.0.9:8090/alarm.do');
+	websocket = new WebSocket('ws://13.209.211.229:8090/alarm.do');
 	websocket.onopen =(evt) =>{
 		
 	};

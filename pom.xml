@@ -435,7 +435,6 @@
 					<password>1004</password>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 </project>

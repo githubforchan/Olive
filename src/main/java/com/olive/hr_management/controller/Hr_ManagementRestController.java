@@ -72,12 +72,7 @@ public class Hr_ManagementRestController {
 		return jsonObject;
 	}
 
-	// 인사관리 > 계정 관리 > 사원 신규 등록 시 사번 중복 검증
-	/*
-	 * @RequestMapping(value = "checkEmpNo.do", method = RequestMethod.POST) public
-	 * Emp checkEmpNo(String empNo) { Emp dto = managementService.checkEmpNo(empNo);
-	 * return dto; }
-	 */
+
 
 	// 인사관리 > 계정 관리 > 사원 신규 등록 시 AJAx 본부 테이블 가져오기
 	@RequestMapping(value = "getHead.do", method = RequestMethod.POST)
@@ -129,10 +124,10 @@ public class Hr_ManagementRestController {
 		if (excelFile == null || excelFile.isEmpty()) {
 			throw new RuntimeException("엑셀파일을 선택해주세요...");
 		}
-		File destFile = new File(
-				"C:\\Users\\Min_Chan\\Desktop\\FinalProject\\EXCEL\\" + excelFile.getOriginalFilename());
+		File destFile = new File("C:\\Users\\82109\\Desktop\\workspace\\spring\\Olive" + excelFile.getOriginalFilename());
 		try {
 			excelFile.transferTo(destFile);
+			System.out.println(destFile);
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
