@@ -79,7 +79,7 @@
 
 ### **GeoLocation** **&** **날씨** **API**
 
-![image-20210216104500835](./images/geoocation.PNG)
+![image-20210216104500835](./images/geoLocation.PNG)
 
 
 
